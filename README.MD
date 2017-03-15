@@ -5,7 +5,7 @@ He has a job as a tow truck driver alongside with Tonya, but his addiction to cr
 Because of this, Franklin has helped the couple in the past driving JB's tow truck.
 Now it is your turn to help them out.
 
-### Planned
+## Planned
 
 - Add impound lot
 - Add Tonya to the map
