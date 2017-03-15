@@ -10,4 +10,4 @@ Now it is your turn to help them out.
 - Add impound lot
 - Add Tonya to the map
 - Add multiple car positions
-- Allow players to receive 
+- Allow players to get money when the job is finished
