@@ -1,4 +1,5 @@
 ## FiveM-Towtruck
+<a href="https://discord.gg/eNJraMf"><img alt="Discord Status" src="https://discordapp.com/api/guilds/285462938691567627/widget.png"></a>   
 
 JB is Tonya Wiggins' boyfriend and an old friend of Franklin.   
 He has a job as a tow truck driver alongside with Tonya, but his addiction to crack causes him to slack off on the business.   
