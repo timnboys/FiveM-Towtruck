@@ -7,7 +7,7 @@ Because of this, Franklin has helped the couple in the past driving JB's tow tru
 Now it is your turn to help them out.
 
 ## Installation
-1. [Download](https://github.com/FiveM-Scripts/FiveM-Towtruck/tree/dev/master.zip)
+1. Download
 2. Extract the folder and rename it to towtruck
 3. Place the folder in your resource folder.
 4. Add - towtruck to your citmp-server.yml
