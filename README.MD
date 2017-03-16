@@ -5,9 +5,13 @@ He has a job as a tow truck driver alongside with Tonya, but his addiction to cr
 Because of this, Franklin has helped the couple in the past driving JB's tow truck.  
 Now it is your turn to help them out.
 
-## Planned
+## Installation
+1. [Download](https://github.com/FiveM-Scripts/FiveM-Towtruck/tree/dev/master.zip)
+2. Extract the folder and rename it to towtruck
+3. Place the folder in your resource folder.
+4. Add - towtruck to your citmp-server.yml
+5. Restart your server
 
-- Add impound lot
-- Add Tonya to the map
+## Planned
 - [Add multiple car positions](https://github.com/FiveM-Scripts/FiveM-Towtruck/issues/2)
 - Allow players to get money when the job is finished
