@@ -48,16 +48,10 @@ MISSION.start = false
 MISSION.vehicle= false
 MISSION.truck = false
 
-local currentMission = -1
-
 local playerCoords
 local playerPed
 
 showStartText   = false
-
---text for mission
-local text1 = false
-local text2 = false
 
 --blips
 local BLIP = {}
@@ -66,10 +60,6 @@ BLIP.company = 0
 
 BLIP.vehicle = {}
 BLIP.vehicle.i = 0
-
-BLIP.destination = {}
-BLIP.destination.i = 0
-
 
 local initload = false
 Citizen.CreateThread(function()
@@ -86,33 +76,33 @@ Citizen.CreateThread(function()
 end)
 
 function init()
-    BLIP.company = AddBlipForCoord(Impound[0]["x"], Impound[0]["y"], Impound[0]["z"])
-    SetBlipSprite(BLIP.company, 357)
-    SetBlipDisplay(BLIP.company, 4)
-    SetBlipScale(BLIP.company, 0.8)
+  BLIP.company = AddBlipForCoord(Impound[0]["x"], Impound[0]["y"], Impound[0]["z"])
+  SetBlipSprite(BLIP.company, 357)
+  SetBlipDisplay(BLIP.company, 4)
+  SetBlipScale(BLIP.company, 0.8)
 
-    BeginTextCommandSetBlipName("STRING")
-    AddTextComponentString("TowTruck")
-    EndTextCommandSetBlipName(BLIP.company)
-    Citizen.Trace("Truck Blip added.\n")
+  BeginTextCommandSetBlipName("STRING")
+  AddTextComponentString("TowTruck")
+  EndTextCommandSetBlipName(BLIP.company)
+  Citizen.Trace("Truck Blip added.\n")
 
-    -- Create Tonya
-    RequestModel(0xcac85344)
-    while not HasModelLoaded(0xcac85344) do
-      Wait(1)
-    end
+  -- Create Tonya
+  RequestModel(0xcac85344)
+  while not HasModelLoaded(0xcac85344) do
+    Wait(1)
+  end
 
-    tonya = CreatePed(5, 0xcac85344, 405.158, -1625.421, 29.292, 62.935, false, true)
-  	GiveWeaponToPed(tonya, 0x1B06D571, 2800, false, true)
-  	SetPedCombatAttributes(tonya, 46, true)
-  	SetPedFleeAttributes(tonya, 0, 0)
-  	SetPedArmour(tonya, 100)
-  	SetPedMaxHealth(tonya, 100)
-  	SetPedRelationshipGroupHash(tonya, GetHashKey("PLAYER"))
-  	TaskStartScenarioInPlace(tonya, "WORLD_HUMAN_PROSTITUTE_LOW_CLASS", 0, true)
-  	SetPedCanRagdoll(tonya, false)
-  	SetPedDiesWhenInjured(tonya, false)
-    Citizen.Trace("Tonya is added.\n")
+  tonya = CreatePed(5, 0xcac85344, 405.158, -1625.421, 29.292, 62.935, false, true)
+  GiveWeaponToPed(tonya, 0x1B06D571, 2800, false, true)
+  SetPedCombatAttributes(tonya, 46, true)
+  SetPedFleeAttributes(tonya, 0, 0)
+  SetPedArmour(tonya, 100)
+  SetPedMaxHealth(tonya, 100)
+  SetPedRelationshipGroupHash(tonya, GetHashKey("PLAYER"))
+  TaskStartScenarioInPlace(tonya, "WORLD_HUMAN_PROSTITUTE_LOW_CLASS", 0, true)
+  SetPedCanRagdoll(tonya, false)
+  SetPedDiesWhenInjured(tonya, false)
+  Citizen.Trace("Tonya is added.\n")
 end
 
 --Draw Text / Menus
@@ -120,26 +110,51 @@ function tick()
 
     --Show menu, when player is near
     if(MISSION.start == false) then
-    if(GetDistanceBetweenCoords( playerCoords, Impound[0]["x"], Impound[0]["y"], Impound[0]["z"] ) < 20) then
+    if(GetDistanceBetweenCoords(playerCoords, Impound[0]["x"], Impound[0]["y"], Impound[0]["z"] ) < 20) then
             if(showStartText == false) then
+              DrawMarker(1,Impound[0]["x"], Impound[0]["y"], Impound[0]["z"], 0, 0, 0, 0, 0, 0, 4.0, 4.0, 2.0, 178, 236, 93, 155, 0, 0, 2, 0, 0, 0, 0)
                ShowInfo("Press ~INPUT_CONTEXT~ to start", 0)
                 StartText()
             end
                 --key controlling
                 -- Start mission
                 if(IsControlPressed(1, Keys["E"])) then
+                  showLoadingPromt("Loading tow truck mission", 2000, 3)
+                  Wait(2000)
                     spawnTruck()
+                    -- Test mission
                     SpawnMission()
                 end
                 -- End mission
                 if(IsControlPressed(1, Keys["DELETE"])) then
-                     -- clear()
+                -- clear()
                 end
             else
                 showStartText = false
         end --if GetDistanceBetweenCoords ...
-
     end --if MISSION.start == false
+
+    if(MISSION.start == true) then
+      -- Check if the player is near the vehicle
+    if(GetDistanceBetweenCoords(playerCoords, -261.666,-1049.059,27.040) < 20) then
+      DrawMissionText("~w~Attach the ~y~vehicle ~w~and bring it to the ~y~impound.", 900)
+     end
+
+     -- Check if the vehicle is attached to the tow truck
+     if(IsVehicleAttachedToTowTruck(truck, vehicle)) then
+       DrawMissionText("~w~Bring the ~y~vehicle ~w~to the drop off zone at the ~y~impound.", 500)
+       SetBlipRoute(current, false)
+       SetBlipRoute(BLIP.company, true)
+      end --if GetDistanceBetweenCoords ..
+
+
+      -- Check if the vehicle is attached to the tow truck and at the impound.
+      if(IsVehicleAttachedToTowTruck(truck, vehicle) and GetDistanceBetweenCoords(playerCoords, Impound[0]["x"], Impound[0]["y"], Impound[0]["z"]) < 20) then
+        DrawMissionText("~w~Press ~y~H to ~w~Detach the ~y~vehicle.", 900)
+        --MISSION.start = false
+       end --if GetDistanceBetweenCoords ..
+
+    end --if MISSION.start == true
 end
 
 function spawnTruck()
@@ -150,34 +165,28 @@ function spawnTruck()
   end
 
  -- Spawn the towtruck model.
-    truck = CreateVehicle(GetHashKey("towtruck"), 408.780,-1639.286,29.291, false, false)
-    SetVehicleNumberPlateText(truck, "M15510")
+    truck = CreateVehicle(GetHashKey("towtruck"), 408.100, -1638.497, 29.257, 229.169, false, false)
+    SetVehicleNumberPlateText(truck, "TOW303")
     SetVehRadioStation(truck, "OFF")
+    SetVehicleSiren(truck, true)
     SetPedIntoVehicle(playerPed, truck, -1)
 end
 
 function SpawnMission()
-  showLoadingPromt("Loading tow truck mission", 2000, 3)
   --currently one destination
   RequestModel(GetHashKey("felon"))
   while not HasModelLoaded(GetHashKey("felon")) do
     Wait(1)
   end
 
-  vehicle = CreateVehicle(GetHashKey("felon"), -261.666046142578,-1049.05944824219,27.0409679412842, false, false)
-  current = AddBlipForCoord(-261.666046142578,-1049.05944824219,27.0409679412842)
-  SetBlipSprite(current, 1)
-  SetBlipColour(current, 3)
+  vehicle = CreateVehicle(GetHashKey("felon"), -261.666,-1049.059,27.040, false, false)
+  SetVehicleBurnout(vehicle, true)
+  current = AddBlipForEntity(vehicle)
+  SetBlipSprite(vehicle, 1)
+  SetBlipColour(vehicle, 3)
   SetBlipRoute(current, true)
   -- Start the mission
   MISSION.start = true
-
-  if GetDistanceBetweenCoords(GetEntityCoords(GetPlayerPed(-1)), -261.666, -1049.059, 27.04, true) > 500.00 then
-    DrawMissionText("~w~Attach the ~y~vehicle ~w~to the towtruck and bring it back to the ~y~impound~w~.", 900)
-    SetBlipRoute(current, true)
-  else
-    SetBlipRoute(current, false)
-  end
 end
 
 function StartText()
@@ -205,6 +214,7 @@ function DrawMissionText(m_text, showtime)
   AddTextComponentString(m_text)
   DrawSubtitleTimed(showtime, 1)
 end
+
 
 function ShowInfo(text, state)
 	SetTextComponentFormat("STRING")
